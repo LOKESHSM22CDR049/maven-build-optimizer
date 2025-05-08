@@ -1,10 +1,8 @@
 pipeline {
     agent any
-
     tools {
-        maven 'Maven 3.8.8'
+        maven 'Maven 3.8.8'  // Ensure this Maven version is configured in Jenkins
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -12,7 +10,15 @@ pipeline {
                 git url: 'https://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@github.com/LOKESHSM22CDR049/maven-build-optimizer.git', branch: 'main'
             }
         }
-
+        stage('Check Directory') {
+            steps {
+                script {
+                    // Debugging step: Check the directory and files in workspace
+                    sh 'pwd'  // Print current working directory
+                    sh 'ls -la'  // List all files to verify the presence of pom.xml
+                }
+            }
+        }
         stage('Parallel Build') {
             parallel {
                 stage('Build Core') {
