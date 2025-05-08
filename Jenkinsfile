@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-username/maven-build-optimizer.git'
+                git 'https://github.com/LOKESHSM22CDR049/maven-build-optimizer.git'
             }
         }
 
