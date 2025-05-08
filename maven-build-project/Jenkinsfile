@@ -1,26 +1,41 @@
 pipeline {
     agent any
+    tools {
+        maven 'Maven 3.9'  // Make sure Maven 3.9 is installed in Jenkins
+    }
     stages {
-        stage('Build') {
+        stage('Checkout') {
+            steps {
+                git credentialsId: 'github-pat', url: 'https://github.com/LOKESHSM22CDR049/maven-build-optimizer.git'
+            }
+        }
+        stage('Parallel Build') {
             parallel {
-                stage('Clean') {
+                core {
                     steps {
-                        echo 'Cleaning project...'
-                        sh 'mvn clean'
+                        sh 'mvn -pl core clean install -am -T 2'  // Run build for the core module in parallel
                     }
                 }
-                stage('Compile') {
+                api {
                     steps {
-                        echo 'Compiling project...'
-                        sh 'mvn compile'
+                        sh 'mvn -pl api clean install -am -T 2'  // Run build for the api module in parallel
                     }
                 }
-                stage('Test') {
+                service {
                     steps {
-                        echo 'Running tests...'
-                        sh 'mvn test'
+                        sh 'mvn -pl service clean install -am -T 2'  // Run build for the service module in parallel
                     }
                 }
+                web {
+                    steps {
+                        sh 'mvn -pl web clean install -am -T 2'  // Run build for the web module in parallel
+                    }
+                }
+            }
+        }
+        stage('Verify') {
+            steps {
+                sh 'mvn verify'  // Verify the build after all parallel tasks
             }
         }
     }
