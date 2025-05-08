@@ -1,48 +1,51 @@
 pipeline {
     agent any
+
     tools {
-        maven 'Maven 3.8.8'  // Ensure this Maven version is configured in Jenkins
+        maven 'Maven 3.8.7' // Adjust if using a different Maven installation name
     }
+
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
-                echo 'Checking out the code from Git repository...'
-                git url: 'https://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@github.com/LOKESHSM22CDR049/maven-build-optimizer.git', branch: 'main'
+                checkout scm
             }
         }
+
         stage('Check Directory') {
             steps {
                 script {
-                    // Debugging step: Check the directory and files in workspace
-                    sh 'pwd'  // Print current working directory
-                    sh 'ls -la'  // List all files to verify the presence of pom.xml
+                    echo "Listing contents of workspace:"
+                    sh 'pwd'
+                    sh 'ls -la'
                 }
             }
         }
+
         stage('Parallel Build') {
             parallel {
                 stage('Build Core') {
                     steps {
                         echo 'Building all modules (Core phase)...'
-                        sh 'mvn clean install -T 2'
+                        sh 'cd maven-build-project && mvn clean install -T 2'
                     }
                 }
                 stage('Build API') {
                     steps {
                         echo 'Building all modules (API phase)...'
-                        sh 'mvn clean install -T 2'
+                        sh 'cd maven-build-project && mvn clean install -T 2'
                     }
                 }
                 stage('Build Service') {
                     steps {
                         echo 'Building all modules (Service phase)...'
-                        sh 'mvn clean install -T 2'
+                        sh 'cd maven-build-project && mvn clean install -T 2'
                     }
                 }
                 stage('Build Web') {
                     steps {
                         echo 'Building all modules (Web phase)...'
-                        sh 'mvn clean install -T 2'
+                        sh 'cd maven-build-project && mvn clean install -T 2'
                     }
                 }
             }
