@@ -5,16 +5,19 @@ pipeline {
             parallel {
                 stage('Clean') {
                     steps {
+                        echo 'Cleaning project...'
                         sh 'mvn clean'
                     }
                 }
                 stage('Compile') {
                     steps {
+                        echo 'Compiling project...'
                         sh 'mvn compile'
                     }
                 }
                 stage('Test') {
                     steps {
+                        echo 'Running tests...'
                         sh 'mvn test'
                     }
                 }
