@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.8.8' // Ensure this Maven version is installed in Jenkins
+        maven 'Maven 3.8.8'
     }
 
     stages {
@@ -17,26 +17,26 @@ pipeline {
             parallel {
                 stage('Build Core') {
                     steps {
-                        echo 'Cleaning and building the core module...'
-                        sh 'mvn -pl core clean install -am -T 2'
+                        echo 'Building all modules (Core phase)...'
+                        sh 'mvn clean install -T 2'
                     }
                 }
                 stage('Build API') {
                     steps {
-                        echo 'Cleaning and building the api module...'
-                        sh 'mvn -pl api clean install -am -T 2'
+                        echo 'Building all modules (API phase)...'
+                        sh 'mvn clean install -T 2'
                     }
                 }
                 stage('Build Service') {
                     steps {
-                        echo 'Cleaning and building the service module...'
-                        sh 'mvn -pl service clean install -am -T 2'
+                        echo 'Building all modules (Service phase)...'
+                        sh 'mvn clean install -T 2'
                     }
                 }
                 stage('Build Web') {
                     steps {
-                        echo 'Cleaning and building the web module...'
-                        sh 'mvn -pl web clean install -am -T 2'
+                        echo 'Building all modules (Web phase)...'
+                        sh 'mvn clean install -T 2'
                     }
                 }
             }
