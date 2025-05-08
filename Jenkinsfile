@@ -1,51 +1,37 @@
 pipeline {
     agent any
+
     tools {
-        maven 'Maven 3.8.8'  // Ensure this Maven version is configured in Jenkins
+        maven 'Maven 3.9.6' // or whatever you named it in Jenkins -> Global Tool Config
+        jdk 'Java 17'       // your configured JDK
     }
+
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out the code from Git repository...'
-                git url: 'https://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@github.com/LOKESHSM22CDR049/maven-build-optimizer.git', branch: 'main'
+                git 'https://github.com/your-username/maven-build-optimizer.git'
             }
         }
-        stage('Check Directory') {
+
+        stage('Build with Parallel Execution') {
             steps {
-                script {
-                    // Debugging step: Check the directory and files in workspace
-                    sh 'pwd'  // Print current working directory
-                    sh 'ls -la'  // List all files to verify the presence of pom.xml
-                }
+                sh 'mvn -T 1C clean install'
             }
         }
-        stage('Parallel Build') {
-            parallel {
-                stage('Build Core') {
-                    steps {
-                        echo 'Building all modules (Core phase)...'
-                        sh 'mvn clean install -T 2'
-                    }
-                }
-                stage('Build API') {
-                    steps {
-                        echo 'Building all modules (API phase)...'
-                        sh 'mvn clean install -T 2'
-                    }
-                }
-                stage('Build Service') {
-                    steps {
-                        echo 'Building all modules (Service phase)...'
-                        sh 'mvn clean install -T 2'
-                    }
-                }
-                stage('Build Web') {
-                    steps {
-                        echo 'Building all modules (Web phase)...'
-                        sh 'mvn clean install -T 2'
-                    }
-                }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build completed successfully with parallel execution!'
+        }
+        failure {
+            echo 'Build failed.'
         }
     }
 }
