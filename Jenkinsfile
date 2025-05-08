@@ -2,36 +2,32 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3.9.6' // or whatever you named it in Jenkins -> Global Tool Config
-        jdk 'Java 17'       // your configured JDK
+        maven 'Maven 3.9.6'  // Make sure this matches the Maven installation name in Jenkins
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/LOKESHSM22CDR049/maven-build-optimizer.git'
+                echo 'Checking out code from Git...'
+                checkout scm
             }
         }
 
         stage('Build with Parallel Execution') {
             steps {
-                sh 'mvn -T 1C clean install'
-            }
-        }
-
-        stage('Archive Artifacts') {
-            steps {
-                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                echo 'Starting Maven Parallel Build...'
+                sh 'time mvn -T 1C clean install'
+                echo 'Maven Build Completed.'
             }
         }
     }
 
     post {
         success {
-            echo 'Build completed successfully with parallel execution!'
+            echo '✅ Build finished successfully!'
         }
         failure {
-            echo 'Build failed.'
+            echo '❌ Build failed.'
         }
     }
 }
