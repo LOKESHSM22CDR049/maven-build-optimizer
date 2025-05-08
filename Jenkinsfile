@@ -1,8 +1,10 @@
 pipeline {
     agent any
+
     tools {
-        maven 'Maven 3.9'  // Ensure Maven 3.9 is configured in Jenkins
+        maven 'Maven 3.8.8' // ✅ Make sure "Maven 3.8.8" is configured in Jenkins -> Global Tool Configuration
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,27 +12,31 @@ pipeline {
                 git credentialsId: 'github-pat', url: 'https://github.com/LOKESHSM22CDR049/maven-build-optimizer.git'
             }
         }
+
         stage('Parallel Build') {
             parallel {
-                core {
+                stage('Build Core') {
                     steps {
                         echo 'Cleaning and building the core module...'
                         sh 'mvn -pl core clean install -am -T 2'
                     }
                 }
-                api {
+
+                stage('Build API') {
                     steps {
                         echo 'Cleaning and building the api module...'
                         sh 'mvn -pl api clean install -am -T 2'
                     }
                 }
-                service {
+
+                stage('Build Service') {
                     steps {
                         echo 'Cleaning and building the service module...'
                         sh 'mvn -pl service clean install -am -T 2'
                     }
                 }
-                web {
+
+                stage('Build Web') {
                     steps {
                         echo 'Cleaning and building the web module...'
                         sh 'mvn -pl web clean install -am -T 2'
@@ -38,6 +44,7 @@ pipeline {
                 }
             }
         }
+
         stage('Verify') {
             steps {
                 echo 'Verifying the build...'
