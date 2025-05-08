@@ -1,11 +1,12 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven 3.9'  // Make sure Maven 3.9 is installed in Jenkins
+        maven 'Maven 3.9'  // Ensure Maven 3.9 is configured in Jenkins
     }
     stages {
         stage('Checkout') {
             steps {
+                echo 'Checking out the code from Git repository...'
                 git credentialsId: 'github-pat', url: 'https://github.com/LOKESHSM22CDR049/maven-build-optimizer.git'
             }
         }
@@ -13,29 +14,34 @@ pipeline {
             parallel {
                 core {
                     steps {
-                        sh 'mvn -pl core clean install -am -T 2'  // Run build for the core module in parallel
+                        echo 'Cleaning and building the core module...'
+                        sh 'mvn -pl core clean install -am -T 2'
                     }
                 }
                 api {
                     steps {
-                        sh 'mvn -pl api clean install -am -T 2'  // Run build for the api module in parallel
+                        echo 'Cleaning and building the api module...'
+                        sh 'mvn -pl api clean install -am -T 2'
                     }
                 }
                 service {
                     steps {
-                        sh 'mvn -pl service clean install -am -T 2'  // Run build for the service module in parallel
+                        echo 'Cleaning and building the service module...'
+                        sh 'mvn -pl service clean install -am -T 2'
                     }
                 }
                 web {
                     steps {
-                        sh 'mvn -pl web clean install -am -T 2'  // Run build for the web module in parallel
+                        echo 'Cleaning and building the web module...'
+                        sh 'mvn -pl web clean install -am -T 2'
                     }
                 }
             }
         }
         stage('Verify') {
             steps {
-                sh 'mvn verify'  // Verify the build after all parallel tasks
+                echo 'Verifying the build...'
+                sh 'mvn verify'
             }
         }
     }
